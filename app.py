@@ -13,9 +13,9 @@ def generate_qr_code(data):
     qr_b64 = base64.b64encode(buffered.getvalue()).decode()
     return f"data:image/png;base64,{qr_b64}"
 
-# Template with blinking text, shining border, and flower background
+# HTML card template with animation, shine, blink, flowers, photo
 def animated_flower_template(name, occasion, date, time, venue, msg, qr_data_uri, photo_uri):
-    return f\"\"\"
+    return f"""
     <style>
     @keyframes blink {{
         0% {{ opacity: 1; }}
@@ -57,12 +57,12 @@ def animated_flower_template(name, occasion, date, time, venue, msg, qr_data_uri
         <img src="{qr_data_uri}" width="100" style="position:absolute; bottom:20px; right:20px;" />
         <p style="font-size:12px; color:#AD1457; position:absolute; bottom:5px; right:20px;">Scan to RSVP</p>
     </div>
-    \"\"\"
+    """
 
 # Streamlit UI
 st.set_page_config(page_title="Shiny Invitation Card Generator", layout="centered")
-st.title("🌸 Animated Invitation Card Generator with Shine, Blink & Flowers")
-st.markdown("Design and download beautiful, animated event invitations with floral effects and custom photo!")
+st.title("🌸 Shiny Animated Invitation Card Generator")
+st.markdown("Design & download beautiful, animated invitation cards with flower theme and glowing effects.")
 
 with st.form("form"):
     name = st.text_input("Invitee's Name:")
@@ -80,7 +80,7 @@ if submitted and name.strip() and venue.strip():
     formatted_date = date.strftime("%d %B %Y")
     formatted_time = time.strftime("%I:%M %p")
 
-    # Process photo
+    # Convert photo to base64
     if uploaded_photo:
         img_bytes = uploaded_photo.read()
         photo_b64 = base64.b64encode(img_bytes).decode()
@@ -88,23 +88,16 @@ if submitted and name.strip() and venue.strip():
     else:
         photo_uri = None
 
+    # Generate HTML card
     html = animated_flower_template(name, occasion, formatted_date, formatted_time, venue, msg, qr_uri, photo_uri)
 
-    st.success("✅ Your shiny invitation card is ready!")
+    st.success("✅ Your animated invitation card is ready!")
     st.components.v1.html(html, height=600, scrolling=False)
 
-    # Download HTML file
+    # Provide download button
     b64 = base64.b64encode(html.encode()).decode()
-    href = f'<a href="data:text/html;base64,{b64}" download="animated_invitation.html">📥 Download Shiny Invitation (HTML)</a>'
+    href = f'<a href="data:text/html;base64,{b64}" download="invitation_card.html">📥 Download as HTML</a>'
     st.markdown(href, unsafe_allow_html=True)
 else:
     if submitted:
         st.warning("Please fill all required fields.")
-'''
-
-# Overwrite app.py with ultimate version
-ultimate_app_path = "/mnt/data/app.py"
-with open(ultimate_app_path, "w") as f:
-    f.write(ultimate_app_code)
-
-ultimate_app_path
